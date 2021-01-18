@@ -8,7 +8,7 @@ CharCodeConv::CharCodeConv()
 {
 	cd_ = ::iconv_open("UTF-16LE", "UTF-8");
 	if (cd_ == reinterpret_cast<::iconv_t>(-1))
-		throw std::runtime_error("BonDriver::BonDriver: ::iconv_open() failed");
+		throw std::runtime_error("CharCodeConv::CharCodeConv: ::iconv_open() failed");
 }
 
 CharCodeConv::~CharCodeConv()
