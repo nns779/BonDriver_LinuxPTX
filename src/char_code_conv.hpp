@@ -1,4 +1,4 @@
-// charconv.hpp
+// char_code_conv.hpp
 
 #pragma once
 
@@ -11,14 +11,14 @@
 
 namespace BonDriver_LinuxPTX {
 
-class CharConv final {
+class CharCodeConv final {
 public:
-	CharConv();
-	~CharConv();
+	CharCodeConv();
+	~CharCodeConv();
 
 	// cannot copy
-	CharConv(const CharConv&) = delete;
-	CharConv& operator=(const CharConv&) = delete;
+	CharCodeConv(const CharCodeConv&) = delete;
+	CharCodeConv& operator=(const CharCodeConv&) = delete;
 
 	bool Utf8ToUtf16(const std::string& src, std::unique_ptr<::WCHAR[]>& dst);
 

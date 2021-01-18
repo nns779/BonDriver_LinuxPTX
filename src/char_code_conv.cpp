@@ -1,23 +1,23 @@
-// charconv.cpp
+// char_code_conv.cpp
 
-#include "charconv.hpp"
+#include "char_code_conv.hpp"
 
 namespace BonDriver_LinuxPTX {
 
-CharConv::CharConv()
+CharCodeConv::CharCodeConv()
 {
 	cd_ = ::iconv_open("UTF-16LE", "UTF-8");
 	if (cd_ == reinterpret_cast<::iconv_t>(-1))
 		throw std::runtime_error("BonDriver::BonDriver: ::iconv_open() failed");
 }
 
-CharConv::~CharConv()
+CharCodeConv::~CharCodeConv()
 {
 	if (cd_ != reinterpret_cast<::iconv_t>(-1))
 		::iconv_close(cd_);
 }
 
-bool CharConv::Utf8ToUtf16(const std::string& src, std::unique_ptr<::WCHAR[]>& dst)
+bool CharCodeConv::Utf8ToUtf16(const std::string& src, std::unique_ptr<::WCHAR[]>& dst)
 {
 	char *s = const_cast<char *>(src.c_str());
 	std::size_t s_len = src.length();

@@ -6,7 +6,7 @@ LDFLAGS := -shared
 LDLIBS := -lm
 
 TARGET := BonDriver_LinuxPTX.so
-OBJS := src/BonDriver_LinuxPTX.o src/config.o src/charconv.o src/io_queue.o src/util.o
+OBJS := src/BonDriver_LinuxPTX.o src/config.o src/char_code_conv.o src/io_queue.o src/util.o
 DEPS := $(OBJS:.o=.d)
 
 all: $(TARGET)

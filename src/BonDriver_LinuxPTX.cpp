@@ -27,14 +27,14 @@ BonDriver::BonDriver(Config& config)
 	current_channel_(0),
 	iorp_(*this)
 {
-	CharConv cv;
+	CharCodeConv cv;
 
 	auto sct = config.Get("BonDriver_LinuxPTX");
 
 	device_ = sct.Get("Device");
 
 	if (!cv.Utf8ToUtf16(sct.Get("Name", "LinuxPTX"), name_))
-		throw std::runtime_error("BonDriver::BonDriver: CharConv::Utf8ToUtf16() failed");
+		throw std::runtime_error("BonDriver::BonDriver: CharCodeConv::Utf8ToUtf16() failed");
 
 	lnb_power_ = sct.Get("LNBPower", 0) ? true : false;
 
@@ -305,12 +305,12 @@ const DWORD BonDriver::GetCurChannel(void)
 	return current_channel_.load(std::memory_order_acquire);
 }
 
-BonDriver::Space::Channel::Channel(CharConv& cv, const std::string& name, int number, int slot)
+BonDriver::Space::Channel::Channel(CharCodeConv& cv, const std::string& name, int number, int slot)
 	: number_(number),
 	slot_(slot)
 {
 	if (!cv.Utf8ToUtf16(name, name_))
-		throw std::runtime_error("BonDriver::Space::Channel:Channel: CharConv::Utf8ToUtf16() failed");
+		throw std::runtime_error("BonDriver::Space::Channel:Channel: CharCodeConv::Utf8ToUtf16() failed");
 }
 
 const ::WCHAR * BonDriver::Space::Channel::GetName() const
@@ -325,11 +325,11 @@ void BonDriver::Space::Channel::ToFreq(::ptx_freq& freq) const
 	return;
 }
 
-BonDriver::Space::Space(CharConv& cv, const std::string& name, ::ptx_system_type system)
+BonDriver::Space::Space(CharCodeConv& cv, const std::string& name, ::ptx_system_type system)
 	: system_(system)
 {
 	if (!cv.Utf8ToUtf16(name, name_))
-		throw std::runtime_error("BonDriver::Space::Space: CharConv::Utf8ToUtf16() failed");
+		throw std::runtime_error("BonDriver::Space::Space: CharCodeConv::Utf8ToUtf16() failed");
 }
 
 const ::WCHAR * BonDriver::Space::GetName() const
@@ -342,7 +342,7 @@ const ::WCHAR * BonDriver::Space::GetName() const
 	return system_;
 }
 
-void BonDriver::Space::AddChannel(CharConv& cv, Config::Section& sct)
+void BonDriver::Space::AddChannel(CharCodeConv& cv, Config::Section& sct)
 {
 	for (std::uint16_t i = 0; i < 300; i++) {
 		char k[8];

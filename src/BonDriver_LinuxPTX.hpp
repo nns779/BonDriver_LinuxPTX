@@ -12,7 +12,7 @@
 #include "IBonDriver2.h"
 #include "ptx_ioctl.h"
 #include "config.hpp"
-#include "charconv.hpp"
+#include "char_code_conv.hpp"
 #include "io_queue.hpp"
 
 namespace BonDriver_LinuxPTX {
@@ -63,7 +63,7 @@ private:
 	public:
 		class Channel final {
 		public:
-			Channel(CharConv& cv, const std::string& name, int number, int slot);
+			Channel(CharCodeConv& cv, const std::string& name, int number, int slot);
 			~Channel() {}
 
 			// cannot copy
@@ -83,7 +83,7 @@ private:
 			int slot_;
 		};
 
-		Space(CharConv& cv, const std::string& name, ::ptx_system_type system);
+		Space(CharCodeConv& cv, const std::string& name, ::ptx_system_type system);
 		~Space() {}
 
 		// cannot copy
@@ -96,7 +96,7 @@ private:
 
 		const ::WCHAR * GetName() const;
 		::ptx_system_type GetSystem() const;
-		void AddChannel(CharConv& cv, Config::Section& sct);
+		void AddChannel(CharCodeConv& cv, Config::Section& sct);
 		const Channel& GetChannel(std::size_t pos) const;
 
 	private:
