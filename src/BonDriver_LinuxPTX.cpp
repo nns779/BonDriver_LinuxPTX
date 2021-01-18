@@ -310,7 +310,7 @@ BonDriver::Space::Channel::Channel(CharCodeConv& cv, const std::string& name, in
 	slot_(slot)
 {
 	if (!cv.Utf8ToUtf16(name, name_))
-		throw std::runtime_error("BonDriver::Space::Channel:Channel: CharCodeConv::Utf8ToUtf16() failed");
+		throw std::runtime_error("BonDriver::Space::Channel::Channel: CharCodeConv::Utf8ToUtf16() failed");
 }
 
 const ::WCHAR * BonDriver::Space::Channel::GetName() const
