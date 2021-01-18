@@ -101,6 +101,11 @@ void IoQueue::PurgeDataBuffer()
 {
 	std::lock_guard<std::mutex> lock(mtx_);
 
+	if (current_buf_) {
+		PushBackFreeBuffer(std::move(current_buf_));
+		current_ofs_ = 0;
+	}
+
 	while (true) {
 		auto buf = PopFrontDataBuffer(false);
 		if (!buf)
