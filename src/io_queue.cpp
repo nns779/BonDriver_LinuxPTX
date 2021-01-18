@@ -144,8 +144,6 @@ bool IoQueue::Read(void *buf, std::size_t& size, std::size_t& remain_count)
 
 		if (buf->actual_length == current_ofs_) {
 			PushBackFreeBuffer(std::move(current_buf_));
-
-			current_buf_.reset();
 			current_ofs_ = 0;
 		}
 	}
@@ -165,7 +163,6 @@ bool IoQueue::ReadBuffer(void **buf, std::size_t& size, std::size_t& remain_coun
 
 	if (current_buf_ && current_buf_->actual_length == current_ofs_) {
 		PushBackFreeBuffer(std::move(current_buf_));
-		current_buf_.reset();
 		current_ofs_ = 0;
 	}
 
