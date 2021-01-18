@@ -46,13 +46,19 @@ bool IoQueue::Stop()
 		return true;
 
 	if (io_op_ == IoOperation::READ) {
-		if (current_buf_)
+		if (current_buf_) {
+			/* cancel */
 			PushBackFreeBuffer(std::move(current_buf_));
+			current_ofs_ = 0;
+		}
 
 		PushBackFreeBuffer(nullptr);
 	} else {
-		if (current_buf_)
+		if (current_buf_) {
+			/* flush */
 			PushBackDataBuffer(std::move(current_buf_));
+			current_ofs_ = 0;
+		}
 
 		PushBackDataBuffer(nullptr);
 	}
