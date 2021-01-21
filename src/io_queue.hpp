@@ -51,10 +51,10 @@ public:
 	bool WaitDataBuffer(std::chrono::milliseconds ms);
 	void PurgeDataBuffer();
 
-	bool Read(void *buf, std::size_t& size, std::size_t& remain_count);
-	bool ReadBuffer(void **buf, std::size_t& size, std::size_t& remain_count);
+	bool Read(void *buf, std::size_t& size, std::size_t& remain_count, bool blocking);
+	bool ReadBuffer(void **buf, std::size_t& size, std::size_t& remain_count, bool blocking);
 	bool HaveReadingBuffer();
-	bool Write(void *buf, std::size_t& size);
+	bool Write(void *buf, std::size_t& size, bool blocking);
 
 private:
 	bool IncreaseFreeBuffer();

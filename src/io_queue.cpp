@@ -123,20 +123,21 @@ void IoQueue::PurgeDataBuffer()
 	return;
 }
 
-bool IoQueue::Read(void *buf, std::size_t& size, std::size_t& remain_count)
+bool IoQueue::Read(void *buf, std::size_t& size, std::size_t& remain_count, bool blocking)
 {
 	if (io_op_ != IoOperation::READ)
 		return false;
 
+	bool ret = false;
 	std::lock_guard<std::mutex> lock(mtx_);
 	std::uint8_t *p = static_cast<std::uint8_t *>(buf);
 	std::size_t remain = size;
 
 	while (remain) {
 		if (!current_buf_) {
-			current_buf_ = PopFrontDataBuffer(true);
+			current_buf_ = PopFrontDataBuffer(blocking);
 			if (!current_buf_)
-				return false;
+				break;
 		}
 
 		auto buf = current_buf_.get();
@@ -148,6 +149,8 @@ bool IoQueue::Read(void *buf, std::size_t& size, std::size_t& remain_count)
 		p += rlen;
 		remain -= rlen;
 
+		ret = true;
+
 		if (buf->actual_length == current_ofs_) {
 			PushBackFreeBuffer(std::move(current_buf_));
 			current_ofs_ = 0;
@@ -157,13 +160,15 @@ bool IoQueue::Read(void *buf, std::size_t& size, std::size_t& remain_count)
 	size -= remain;
 	remain_count = GetDataBufferCount() + ((current_buf_) ? 1 : 0);
 
-	return true;
+	return ret;
 }
 
-bool IoQueue::ReadBuffer(void **buf, std::size_t& size, std::size_t& remain_count)
+bool IoQueue::ReadBuffer(void **buf, std::size_t& size, std::size_t& remain_count, bool blocking)
 {
 	if (io_op_ != IoOperation::READ)
 		return false;
+
+	remain_count = 0;
 
 	std::lock_guard<std::mutex> lock(mtx_);
 
@@ -173,7 +178,7 @@ bool IoQueue::ReadBuffer(void **buf, std::size_t& size, std::size_t& remain_coun
 	}
 
 	if (!current_buf_) {
-		current_buf_ = PopFrontDataBuffer(true);
+		current_buf_ = PopFrontDataBuffer(blocking);
 		if (!current_buf_)
 			return false;
 	}
@@ -191,7 +196,7 @@ bool IoQueue::HaveReadingBuffer()
 	return !!current_buf_;
 }
 
-bool Write(void *buf, std::size_t& size)
+bool Write(void *buf, std::size_t& size, bool blocking)
 {
 	// not implemented
 	return false;

@@ -180,7 +180,7 @@ const BOOL BonDriver::GetTsStream(BYTE *pDst, DWORD *pdwSize, DWORD *pdwRemain)
 
 	std::size_t size, remain;
 
-	if (!ioq_->Read(pDst, size, remain))
+	if (!ioq_->Read(pDst, size, remain, false))
 		return FALSE;
 
 	*pdwSize = static_cast<::DWORD>(size);
@@ -197,7 +197,7 @@ const BOOL BonDriver::GetTsStream(BYTE **ppDst, DWORD *pdwSize, DWORD *pdwRemain
 
 	std::size_t size, remain;
 
-	if (!ioq_->ReadBuffer(reinterpret_cast<void **>(ppDst), size, remain))
+	if (!ioq_->ReadBuffer(reinterpret_cast<void **>(ppDst), size, remain, false))
 		return FALSE;
 
 	*pdwSize = static_cast<::DWORD>(size);
