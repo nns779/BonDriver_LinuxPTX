@@ -2,6 +2,8 @@
 
 #include "char_code_conv.hpp"
 
+#include <stdexcept>
+
 namespace BonDriver_LinuxPTX {
 
 CharCodeConv::CharCodeConv()
