@@ -2,7 +2,7 @@ CXX := g++
 INCLUDES := -Iinclude
 CPPFLAGS := -MMD
 CXXFLAGS := -std=c++17 $(INCLUDES) -O2 -Wall -pthread -fPIC
-LDFLAGS := -shared
+LDFLAGS := -shared -pthread
 LDLIBS := -lm
 
 TARGET := BonDriver_LinuxPTX.so
