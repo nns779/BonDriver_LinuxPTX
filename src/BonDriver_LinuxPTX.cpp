@@ -38,6 +38,20 @@ BonDriver::BonDriver(Config& config)
 
 	lnb_power_ = sct.Get("LNBPower", 0) ? true : false;
 
+	auto num_packets = sct.Get("NumberOfPacketsPerBuffer", 2048);
+	auto max_buffers = sct.Get("MaximumNumberOfBuffers", 32);
+	auto min_buffers = sct.Get("MinimumNumberOfBuffers", 2);
+
+	if (num_packets <= 0)
+		throw std::runtime_error("BonDriver::BonDriver: 'NumberOfPacketsPerBuffer' <= 0");
+	if (max_buffers <= 0)
+		throw std::runtime_error("BonDriver::BonDriver: 'MaximumNumberOfBuffers' <= 0");
+	if (min_buffers <= 0)
+		throw std::runtime_error("BonDriver::BonDriver: 'MinimumNumberOfBuffers' <= 0");
+
+	if (max_buffers < min_buffers)
+		throw std::runtime_error("BonDriver::BonDriver: 'MaximumNumberOfBuffers' < 'MinimumNumberOfBuffers'");
+
 	std::vector<std::string> spaces;
 	bool isdbt = false, isdbs = false;
 
@@ -67,7 +81,7 @@ BonDriver::BonDriver(Config& config)
 	if (isdbt && isdbs)
 		multi_ = true;
 
-	ioq_.reset(new IoQueue(IoQueue::IoOperation::READ, iorp_, 188 * 2048));
+	ioq_.reset(new IoQueue(IoQueue::IoOperation::READ, iorp_, 188 * num_packets, max_buffers, min_buffers));
 }
 
 BonDriver::~BonDriver()
