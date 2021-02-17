@@ -26,4 +26,4 @@ private:
 	::iconv_t cd_;
 };
 
-} // BonDriver_LinuxPTX
+} // namespace BonDriver_LinuxPTX

@@ -37,4 +37,4 @@ bool CharCodeConv::Utf8ToUtf16(const std::string& src, std::unique_ptr<::WCHAR[]
 	return true;
 }
 
-} // BonDriver_LinuxPTX
+} // namespace BonDriver_LinuxPTX

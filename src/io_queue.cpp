@@ -387,4 +387,4 @@ void IoQueue::WriteWorker()
 	iop_.Stop();
 }
 
-} // BonDriver_LinuxPTX
+} // namespace BonDriver_LinuxPTX
