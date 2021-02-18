@@ -23,7 +23,6 @@ public:
 	struct IoBuffer final {
 		std::unique_ptr<std::uint8_t[]> buf;
 		std::size_t actual_length;
-		bool io_pending;
 	};
 
 	class IoProvider {

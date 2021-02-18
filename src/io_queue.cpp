@@ -45,7 +45,6 @@ bool IoQueue::Start()
 	}
 
 	if (current_buf_) {
-		current_buf_->io_pending = false;
 		free_buf_.push_back(std::move(current_buf_));
 		current_ofs_ = 0;
 	}
@@ -54,9 +53,7 @@ bool IoQueue::Start()
 		auto buf = std::move(data_buf_.front());
 		data_buf_.pop_front();
 
-		if (buf)
-			buf->io_pending = false;
-		else
+		if (!buf)
 			continue;
 
 		free_buf_.push_back(std::move(buf));
@@ -139,7 +136,6 @@ void IoQueue::PurgeDataBuffer()
 	std::lock_guard<std::mutex> data_lock(data_mtx_);
 
 	if (current_buf_) {
-		current_buf_->io_pending = false;
 		free_buf_.push_back(std::move(current_buf_));
 		current_ofs_ = 0;
 	}
@@ -147,9 +143,6 @@ void IoQueue::PurgeDataBuffer()
 	while (!data_buf_.empty()) {
 		auto buf = std::move(data_buf_.front());
 		data_buf_.pop_front();
-
-		if (buf)
-			buf->io_pending = false;
 
 		free_buf_.push_back(std::move(buf));
 	}
@@ -248,7 +241,6 @@ bool IoQueue::IncreaseFreeBuffer()
 
 	buf->buf.reset(new std::uint8_t[buf_size_]);
 	buf->actual_length = 0;
-	buf->io_pending = false;
 
 	free_buf_.emplace_front(buf);
 	total_buf_num_++;
@@ -271,13 +263,6 @@ bool IoQueue::PushBackDataBuffer(std::unique_ptr<IoBuffer>&& buf)
 {
 	std::unique_lock<std::mutex> lock(data_mtx_);
 
-	if (buf) {
-		if (buf->io_pending)
-			return false;
-
-		buf->io_pending = true;
-	}
-
 	data_buf_.push_back(std::move(buf));
 
 	lock.unlock();
@@ -289,9 +274,6 @@ bool IoQueue::PushBackDataBuffer(std::unique_ptr<IoBuffer>&& buf)
 bool IoQueue::PushBackFreeBuffer(std::unique_ptr<IoBuffer>&& buf)
 {
 	std::unique_lock<std::mutex> lock(free_mtx_);
-
-	if (buf && buf->io_pending)
-		return false;
 
 	free_buf_.push_back(std::move(buf));
 
@@ -320,8 +302,6 @@ std::unique_ptr<IoQueue::IoBuffer> IoQueue::PopFrontDataBuffer(bool wait)
 
 	if (!buf)
 		data_buf_.push_front(nullptr);
-	else
-		buf->io_pending = false;
 
 	return buf;
 }
