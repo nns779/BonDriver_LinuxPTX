@@ -79,14 +79,16 @@ bool IoQueue::Stop()
 		return true;
 
 	if (io_op_ == IoOperation::READ) {
+		// stop ReadWorker
 		PushBackFreeBuffer(nullptr);
 	} else {
 		if (current_buf_) {
-			/* flush */
+			// flush
 			PushBackDataBuffer(std::move(current_buf_));
 			current_ofs_ = 0;
 		}
 
+		// stop WriteWorker
 		PushBackDataBuffer(nullptr);
 	}
 
