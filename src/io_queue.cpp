@@ -106,19 +106,27 @@ bool IoQueue::WaitDataBuffer(std::chrono::milliseconds ms)
 void IoQueue::PurgeDataBuffer()
 {
 	std::lock_guard<std::mutex> lock(mtx_);
+	std::unique_lock<std::mutex> free_lock(free_mtx_);
+	std::lock_guard<std::mutex> data_lock(data_mtx_);
 
 	if (current_buf_) {
-		PushBackFreeBuffer(std::move(current_buf_));
+		current_buf_->io_pending = false;
+		free_buf_.push_back(std::move(current_buf_));
 		current_ofs_ = 0;
 	}
 
-	while (true) {
-		auto buf = PopFrontDataBuffer(false);
-		if (!buf)
-			break;
+	while (!data_buf_.empty()) {
+		auto buf = std::move(data_buf_.front());
+		data_buf_.pop_front();
 
-		PushBackFreeBuffer(std::move(buf));
+		if (buf)
+			buf->io_pending = false;
+
+		free_buf_.push_back(std::move(buf));
 	}
+
+	free_lock.unlock();
+	free_cond_.notify_all();
 
 	return;
 }
