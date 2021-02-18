@@ -34,6 +34,39 @@ bool IoQueue::Start()
 	if (th_)
 		return true;
 
+	std::unique_lock<std::mutex> free_lock(free_mtx_);
+	std::unique_lock<std::mutex> data_lock(data_mtx_);
+
+	for (auto it = free_buf_.begin(); it != free_buf_.end();) {
+		if (!*it)
+			it = free_buf_.erase(it);
+		else
+			++it;
+	}
+
+	if (current_buf_) {
+		current_buf_->io_pending = false;
+		free_buf_.push_back(std::move(current_buf_));
+		current_ofs_ = 0;
+	}
+
+	while (!data_buf_.empty()) {
+		auto buf = std::move(data_buf_.front());
+		data_buf_.pop_front();
+
+		if (buf)
+			buf->io_pending = false;
+		else
+			continue;
+
+		free_buf_.push_back(std::move(buf));
+	}
+
+	free_lock.unlock();
+	free_cond_.notify_all();
+
+	data_lock.unlock();
+
 	th_.reset(new std::thread((io_op_ == IoOperation::READ) ? &BonDriver_LinuxPTX::IoQueue::ReadWorker : &BonDriver_LinuxPTX::IoQueue::WriteWorker, this));
 	return true;
 }
