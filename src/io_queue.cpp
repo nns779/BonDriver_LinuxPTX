@@ -289,7 +289,9 @@ std::unique_ptr<IoQueue::IoBuffer> IoQueue::PopFrontDataBuffer(bool wait)
 	auto buf = std::move(data_buf_.front());
 	data_buf_.pop_front();
 
-	if (buf)
+	if (!buf)
+		data_buf_.push_front(nullptr);
+	else
 		buf->io_pending = false;
 
 	return buf;
@@ -316,6 +318,9 @@ std::unique_ptr<IoQueue::IoBuffer> IoQueue::PopBackFreeBuffer(bool wait)
 
 	auto buf = std::move(free_buf_.back());
 	free_buf_.pop_back();
+
+	if (!buf)
+		free_buf_.push_back(nullptr);
 
 	return buf;
 }
