@@ -1,4 +1,9 @@
-// config.cpp
+// SPDX-License-Identifier: MIT
+/*
+ * INI file loader (config.cpp)
+ *
+ * Copyright (c) 2021 nns779
+ */
 
 #include "config.hpp"
 

@@ -1,4 +1,9 @@
-// char_code_conv.cpp
+// SPDX-License-Identifier: MIT
+/*
+ * Character code converter (char_code_conv.cpp)
+ *
+ * Copyright (c) 2021 nns779
+ */
 
 #include "char_code_conv.hpp"
 

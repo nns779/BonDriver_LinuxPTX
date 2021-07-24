@@ -1,4 +1,9 @@
-// io_queue.cpp
+// SPDX-License-Identifier: MIT
+/*
+ * I/O queue operator (io_queue.cpp)
+ *
+ * Copyright (c) 2021 nns779
+ */
 
 #include "io_queue.hpp"
 

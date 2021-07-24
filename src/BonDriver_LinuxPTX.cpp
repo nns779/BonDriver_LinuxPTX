@@ -1,4 +1,9 @@
-// BonDriver_LinuxPTX.cpp
+// SPDX-License-Identifier: MIT
+/*
+ * BonDriver for Linux PTX (BonDriver_LinuxPTX.cpp)
+ *
+ * Copyright (c) 2021 nns779
+ */
 
 #include "BonDriver_LinuxPTX.hpp"
 

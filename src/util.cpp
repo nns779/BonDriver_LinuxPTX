@@ -1,4 +1,9 @@
-// util.cpp
+// SPDX-License-Identifier: MIT
+/*
+ * Useful functions (util.cpp)
+ *
+ * Copyright (c) 2021 nns779
+ */
 
 #include "util.hpp"
 
